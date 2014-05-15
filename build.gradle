@@ -1,0 +1,14 @@
+apply plugin: 'scala'
+apply plugin: 'war'
+apply plugin: 'eclipse'
+apply plugin: 'jetty'
+
+repositories { mavenCentral() }
+
+dependencies {
+  compile 'org.scala-lang:scala-library:2.10.1'
+  compile 'com.sun.jersey:jersey-server:1.18.1'
+  compile 'com.sun.jersey:jersey-core:1.18.1'
+  compile 'com.sun.jersey:jersey-servlet:1.18.1'
+  compile 'com.netflix.rxjava:rxjava-scala:0.18.3'
+}
