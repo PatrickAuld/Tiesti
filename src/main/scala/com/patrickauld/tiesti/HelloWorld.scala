@@ -6,6 +6,15 @@ package com.patrickauld.tiesti
 
 import javax.ws.rs.Path
 import javax.ws.rs.GET
+import com.patrickauld.tiesti.store.StubStore
+import com.patrickauld.tiesti.core.TiestiService
+import org.json4s._
+import org.json4s.JsonDSL.WithBigDecimal._
+import org.json4s.jackson.JsonMethods._
+import org.json4s.jackson.Serialization.{read, write}
+import org.json4s.Serialization
+import org.json4s.jackson.Serialization
+
 
 /**
  * @author <a href="mailto:pauld@birst.com">Patrick Auld</a>
@@ -14,8 +23,11 @@ import javax.ws.rs.GET
 @Path("/")
 class HelloWorld {
 
+  private val service = new TiestiService(new StubStore())
+  
   @GET
   def hello(): String = {
-    return "Hello World!"
+    implicit val formats = Serialization.formats(NoTypeHints)
+    write(service.getProperties("a"))
   }
 }
