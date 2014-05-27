@@ -22,9 +22,17 @@ TODO
 
         { 
             "properties": {
-                "key" : {
-                    "value" : "[actual value]",
-                    "root" : "[literal|variable]"
+                "poop" : {
+                    "value" : "hehe",
+                    "root" : "literal"
+                },
+                "cookie" : {
+                    "value" : "monster",
+                    "root" : "literal"
+                },
+                "coco" : {
+                    "value" : "nut",
+                    "root" : "variable"
                 }
             }
         }
@@ -45,14 +53,58 @@ A single configuration object with all its details
     + Body
 
             {
-                "id" : id,
+                "id" : "id",
                 "properties": {
-                    "key" : {
-                        "value" : "[actual value]",
-                        "root" : "[literal|variable]"
+                    "poop" : {
+                        "value" : "hehe",
+                        "root" : "literal"
+                    },
+                    "cookie" : {
+                        "value" : "monster",
+                        "root" : "literal"
+                    },
+                    "coco" : {
+                        "value" : "nut",
+                        "root" : "variable"
                     }
                 }
             }
 
 ### Remove a Configuration [DELETE]
 + Response 204
+
+## Variables [/vars]
+
+### List all Variables [GET]
+Lists all of the available variables
++ Response 200 (application/json)
+
+        [
+            {
+                "id" : "123",
+                "lable" : "dbPassword",
+                "value" : "password123"
+            },
+            {
+                "id" : "456",
+                "lable" : "dbUsername",
+                "value" : "admin"
+            }
+        ]
+
+### Create a new Variable [POST]
+Creates a new variable.
++ Request (application/json)
+
+            {
+                "lable" : "secretCodeWord",
+                "value" : "pickles"
+            }
+
++ Response 201 (application/json)
+
+            {
+                "id" : "8008",
+                "lable" : "secretCodeWord",
+                "value" : "pickles"
+            }
