@@ -2,103 +2,32 @@ FORMAT: 1A
 HOST: http://localhost/rest/v1/
 
 # Tiesti
-API for managing name/value configurations.
+API for managing service configurations.
 
-# Group Notes
-TODO
-
-## Configurations Collection [/configs]
-### List all Configurations [GET]
-+ Response 200 (application/json)
-
-        [{
-          "id": "1"
-        }, {
-          "id": "2"
-        }]
-
-### Create a Configuration [POST]
-+ Request (application/json)
-
-        { 
-            "properties": {
-                "poop" : {
-                    "value" : "hehe",
-                    "root" : "const"
-                },
-                "cookie" : {
-                    "value" : "monster",
-                    "root" : "const"
-                },
-                "coco" : {
-                    "value" : "nut",
-                    "root" : "var"
-                }
-            }
-        }
-
-+ Response 201 (application/json)
-+ Header
-    Location : $HOST/configs/1234
-
-## Configuration [/configs/{id}]
-A single configuration object with all its details
-
-+ Parameters
-    + id (required, string, `1`) ... String identifier for the configuration.
-
-### Retrieve a Configuration [GET]
-+ Parameters 
-    + expandVars (optional, boolean, 'false') ... When set to true information on variables is included in the response.
-+ Response 200 (application/json)
-    + Body
-
-            {
-                "id" : "id",
-                "properties": {
-                    "poop" : {
-                        "value" : "hehe",
-                        "root" : "const"
-                    },
-                    "cookie" : {
-                        "value" : "monster",
-                        "root" : "const"
-                    },
-                    "coco" : {
-                        "value" : "nut",
-                        "root" : "var",
-                        "variable" : {
-                            "id" : "1",
-                            "label" : "Drink or dessert?"
-                        }
-                    }
-                }
-            }
-
-### Remove a Configuration [DELETE]
-+ Response 204
+# Group Variables
+Variables are referencable properties that can be 
+reused between multiple configurations.
 
 ## Variables [/vars]
 
++ Model (application/json)
+
+            [
+                {
+                    "id" : "123",
+                    "label" : "dbPassword",
+                    "value" : "password123"
+                }
+            ]
+
 ### List all Variables [GET]
 Lists all of the available variables
-+ Response 200 (application/json)
-
-        [
-            {
-                "id" : "123",
-                "label" : "dbPassword",
-                "value" : "password123"
-            },
-            {
-                "id" : "456",
-                "label" : "dbUsername",
-                "value" : "admin"
-            }
-        ]
++ Response 200 
+    
+    [Variables][]
 
 ### Create a new Variable [POST]
-Creates a new variable.
+Creates a new variable, is the variable model without an ID.
 + Request (application/json)
 
             {
@@ -106,29 +35,67 @@ Creates a new variable.
                 "value" : "pickles"
             }
 
-+ Response 201 (application/json)
-+ Header
-        Location : $HOST/vars/678
++ Response 201
+
+    [Variable][]
+
+    + Header
+    
+            Location : $HOST/vars/678
+            
+## Variable [/vars/{varId}]
+Info on a specific varaible.
+
++ Model (application/json)
+
+            {
+                "id" : "123",
+                "label" : "dbPassword",
+                "value" : "password123"
+            }
+
+### Get Variable Info [GET]
+
++ Response 200
+
+    [Variable][]
+
+### Update a Variable [PUT]
+
++ Request (application/json)
+            
+            {
+                "label" : "dbPassword",
+                "value" : "password123"
+            }
+
++ Response 200
+
+    [Variable][]
+
+# Group Services
+Services are entiries than can have configuration's associated with them. They can have independent versions.
 
 ## Services [/services]
 Services are enties that configs can be associated with.
 
 ### List all services [GET]
 + Response 200 (application/json)
-        [
-            {
-                "id" : "xyz",
-                "label" : "Secret Service",
-                "description" : "Redacted",
-                "versions" : [ "1", "2" ]
-            },
-            {
-                "id" : "abc",
-                "label" : "Table Service",
-                "decription" : "Overpriced DIY drinking"
-                "versions" : [ "1" ]
-            }
-        ]
+
+    + Body
+    
+            [
+                {
+                    "id" : "xyz",
+                    "label" : "Secret Service",
+                    "description" : "Redacted"
+                },
+                {
+                    "id" : "abc",
+                    "label" : "Table Service",
+                    "decription" : "Overpriced DIY drinking"
+                }
+            ]
 
 ### Create a new Service [POST]
 + Request (application/json)
@@ -138,32 +105,44 @@ Services are enties that configs can be associated with.
                 "decription" : "A stinky job"
             }
 
-+ Response 201 (application/json)
-+ Header
-        location : $HOST/service/678
++ Response 201
+
+    + Header
+    
+            location : $HOST/service/678
 
 ## Service [/services/{id}]
 A single service.
-### Get info on a service [GET]
-+ Response 200 (application/json)
+
++ Model (application/json)
+
         {
             "id" : "xyz",
             "label" : "Secret Service",
             "description" : "Redacted",
             "versions" : [ "1" , "2" ]
         }
+        
+### Get info on a service [GET]
+
++ Response 200 
+    [Service][]
 
 ### Update info for a service [PUT]
 + Request (application/json)
+
         {
             "label" : "Secret Service",
             "description" : "==============",
         }
-+ Response 204 (application/json)
+        
++ Response 200
+    [Service][]
 
 ## Service Versions [/services/{id}/versions]
-### List all Versions [GET]
-+ Response 200 (application/json)
+
++ Model (application/json)
+
         [
             {
                 "id" : "123",
@@ -177,19 +156,66 @@ A single service.
             }
         ]
 
+### List all Versions [GET]
++ Response 200 
+    [Service Versions][]
+
 ### Create a new version of the service [POST]
 + Request (application/json)
+
         { "label" : "Obama (2nd term)" }
 
-+ Response 201 (application/json)
-+ Header
-    Location $HOST/service/xyz/version/345
++ Response 201
+    [Service Version][]
 
-## A single service version [/services/{serviceId}/version/{versionId}]
+    + Header
+    
+            Location: $HOST/service/xyz/version/345
+
+## Service Version [/services/{serviceId}/version/{versionId}]
++ Model (application/json)
+
+            {
+                "id" : "234",
+                "label" : "Obama (1st term)",
+                "configurationId" : "2"
+            }
+
 ### Get a version Id [GET]
-+ Response 200 (application/json)
-        {
-            "id" : "123",
-            "label" : "Obama (2nd term)",
-            "configurationId" : "3"
-        }
++ Response 200 
+
+    [Service Version][]
+        
+## Service Config [/services/{serviceId}/version/{versionId}/config]
+A single configuration object with all its details.
+
++ Model (application/json)
+
+    + Body
+    
+            { 
+                "properties": {
+                    "poop" : {
+                        "value" : "hehe",
+                        "root" : "const"
+                    },
+                    "cookie" : {
+                        "value" : "monster",
+                        "root" : "const"
+                    },
+                    "coco" : {
+                        "value" : "nut",
+                        "root" : "var"
+                    }
+                }
+            }
+
+### Retrieve a Configuration [GET]
+
++ Response 200
+
+    [Service Config][]
+
+### Remove a Configuration [DELETE]
+
++ Response 204
